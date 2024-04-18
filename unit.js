@@ -1,13 +1,15 @@
 const {Quantity} = require("./quantity");
 
 class Unit{
-    constructor(ratioToRelativeUnit = 1, relativeUnit){
+    constructor(ratioToRelativeUnit = 1, relativeUnit, offsetToRelativeUnit = 0){
         if (relativeUnit) {
             this._baseUnit = relativeUnit._baseUnit;
             this._ratioToBaseUnit = ratioToRelativeUnit * relativeUnit._ratioToBaseUnit;
+            this._offsetToBaseUnit = offsetToRelativeUnit + relativeUnit._offsetToBaseUnit;
         } else {
             this._baseUnit = this;
-            this._ratioToBaseUnit = ratioToRelativeUnit 
+            this._ratioToBaseUnit = ratioToRelativeUnit;
+            this._offsetToBaseUnit = offsetToRelativeUnit; 
         }
     }
 
@@ -19,7 +21,11 @@ class Unit{
         if (!this.isCompatibleWith(otherUnit)){
             throw new TypeError("Incompatible Units");
         }
-        return otherAmount * otherUnit._ratioToBaseUnit / this._ratioToBaseUnit;
+        console.log(otherAmount);
+        console.log(otherUnit._ratioToBaseUnit);
+        console.log(this._ratioToBaseUnit);
+        console.log(otherUnit._offsetToBaseUnit);
+        return ((otherAmount - otherUnit._offsetToBaseUnit) * otherUnit._ratioToBaseUnit / this._ratioToBaseUnit) + this._offsetToBaseUnit;
     }
 
     isCompatibleWith(other){

@@ -1,3 +1,5 @@
+const THRESHOLD = 0.0000001;
+
 class Quantity{
     constructor(amount, unit){
         this._amount = amount;
@@ -15,8 +17,8 @@ class Quantity{
     }
 
     _amountsInBaseUnitAreEqual(other) {
-        return this._amount ==
-            this._unit.amountInThisUnit(other._amount, other._unit);
+        return Math.abs(this._amount -
+            this._unit.amountInThisUnit(other._amount, other._unit)) < THRESHOLD;
     }
 
     _unitsAreCompatible(other) {

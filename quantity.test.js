@@ -1,6 +1,7 @@
 const {Quantity} = require("./quantity");
 const {TEASPOON, TABLESPOON, OUNCE, CUP, PINT, QUART, GALLON} = require("./volumes");
 const {INCH, FOOT} = require("./lengths");
+const { CELSIUS } = require("./temperature");
 
 describe ('Measurements....', () => {
     test('can be compared for equality', () => {
@@ -12,6 +13,8 @@ describe ('Measurements....', () => {
         expect(new Quantity(2, TABLESPOON).equals(new Quantity(6, TEASPOON))).toBe(true);
 
         expect(new Quantity(2, OUNCE).equals(new Quantity(1, FOOT))).toBe(false);
+
+        expect(new Quantity(1, CELSIUS).equals(new Quantity(1, FOOT))).toBe(false);
     });
 
     test('Compatible quantities can be added together', () => {
