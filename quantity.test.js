@@ -1,5 +1,6 @@
 const {Quantity} = require("./quantity");
-const {TEASPOON, TABLESPOON, OUNCE, CUP, PINT, QUART} = require("./volumes");
+const {TEASPOON, TABLESPOON, OUNCE, CUP, PINT, QUART, GALLON} = require("./volumes");
+const {INCH, FOOT} = require("./lengths");
 
 describe ('Measurements....', () => {
     test('can be compared for equality', () => {
@@ -9,13 +10,30 @@ describe ('Measurements....', () => {
         expect(new Quantity(1, TEASPOON).equals(new Quantity(1, TABLESPOON))).toBe(false);
         expect(new Quantity(3, TEASPOON).equals(new Quantity(1, TABLESPOON))).toBe(true);
         expect(new Quantity(2, TABLESPOON).equals(new Quantity(6, TEASPOON))).toBe(true);
+
+        expect(new Quantity(2, OUNCE).equals(new Quantity(1, FOOT))).toBe(false);
     });
 
-    test('Board conversions', () => {
-        expect(TABLESPOON.s(1).equals(TEASPOON.s(3))).toBe(true);
-        expect(OUNCE.s(1).equals(TABLESPOON.s(2))).toBe(true);
-        expect(CUP.s(1).equals(OUNCE.s(8))).toBe(true);
-        expect(PINT.s(1).equals(CUP.s(2))).toBe(true);
-        expect(QUART.s(1).equals(PINT.s(2))).toBe(true);
-    });
+    test('Compatible quantities can be added together', () => {
+        expect(new Quantity(1, TEASPOON).add(new Quantity(0, TEASPOON)).equals(new Quantity(1, TEASPOON))).toBe(true);
+        expect(new Quantity(1, TEASPOON).add(new Quantity(1, TEASPOON)).equals(new Quantity(2, TEASPOON))).toBe(true);
+        expect(new Quantity(2, TEASPOON).add(new Quantity(1, TEASPOON)).equals(new Quantity(1, TABLESPOON))).toBe(true);
+        expect(new Quantity(1, OUNCE).add(new Quantity(1, TABLESPOON)).equals(new Quantity(9, TEASPOON))).toBe(true);
+    })
+
+    test('Adding incompatible quantities will result in an error', () => {
+        const INCOMPATIBLE_UNIT_ERROR = new TypeError("Incompatible Units");
+        expect(() => {
+            new Quantity(1, TEASPOON).add(new Quantity(0, INCH))
+        }).toThrow(INCOMPATIBLE_UNIT_ERROR);
+        expect(() => {
+            new Quantity(1, INCH).add(new Quantity(0, TEASPOON))
+        }).toThrow(INCOMPATIBLE_UNIT_ERROR);
+        expect(() => {
+            new Quantity(2, FOOT).add(new Quantity(3, TABLESPOON))
+        }).toThrow(INCOMPATIBLE_UNIT_ERROR);
+        expect(() => {
+            new Quantity(4, INCH).add(new Quantity(5, TABLESPOON))
+        }).toThrow(INCOMPATIBLE_UNIT_ERROR);
+    })
 });
